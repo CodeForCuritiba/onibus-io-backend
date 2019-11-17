@@ -9,7 +9,7 @@ const (
 	urbsCode   = "URBS_CODE"
 	dbStrConn  = "DB_URL"
 	dbName     = "DB_HIST"
-	wakeUpURL  = "WAKEUP_URL"
+	port       = "PORT"
 )
 
 // Configurer é a interface que define um configurador no sistema.
@@ -18,7 +18,7 @@ type Configurer interface {
 	UrbsCode() string
 	DBName() string
 	DBStrConn() string
-	WakeUpURL() string
+	Port() string
 }
 
 // EnvConfigurer é um confiurador que  capitura as configurações das variáveis de ambiente.
@@ -52,7 +52,7 @@ func (ec EnvConfigurer) DBName() string {
 	return ec.getValue(dbName)
 }
 
-// WakeUpURL retorna a url utilizada para acordar o dyno do heroku
-func (ec EnvConfigurer) WakeUpURL() string {
-	return ec.getValue(wakeUpURL)
+// Port retorna a porta liberada para rodar o servidor (padrão heroku)
+func (ec EnvConfigurer) Port() string {
+	return os.Getenv(port)
 }

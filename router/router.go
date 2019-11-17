@@ -15,6 +15,7 @@ func NewRouter(s store.Storer) chi.Router {
 	r.Use(render.SetContentType(render.ContentTypeJSON))
 	r.Mount("/", appRoutes())
 	r.Mount("/api/linhas", linhasRoutes(s))
+	r.Mount("/api/veiculos", veiculosRoutes(s))
 	return r
 }
 
@@ -51,5 +52,29 @@ func linhasRoutes(s store.Storer) chi.Router {
 		}
 		json.NewEncoder(w).Encode(linha)
 	})
+	return r
+}
+
+func veiculosRoutes(s store.Storer) chi.Router {
+	r := chi.NewRouter()
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		veiculos, err := s.Veiculos()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(err)
+			return
+		}
+		json.NewEncoder(w).Encode(veiculos)
+	})
+	// r.Get("/{codigo}", func(w http.ResponseWriter, r *http.Request) {
+	// 	codigo := chi.URLParam(r, "codigo")
+	// 	linha, err := s.Linha(codigo)
+	// 	if err != nil {
+	// 		w.WriteHeader(http.StatusInternalServerError)
+	// 		json.NewEncoder(w).Encode(err)
+	// 		return
+	// 	}
+	// 	json.NewEncoder(w).Encode(linha)
+	// })
 	return r
 }

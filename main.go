@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -31,7 +32,7 @@ func main() {
 	log.Println("Criando rotas...")
 	r := router.NewRouter(s)
 	log.Println("Rotas criadas")
-
-	http.ListenAndServe(":3333", r)
+	log.Printf("Iniciando servidor na porta %s\n", config.Port())
+	http.ListenAndServe(fmt.Sprintf(":%s", config.Port()), r)
 
 }
