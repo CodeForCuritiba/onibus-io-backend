@@ -9,6 +9,6 @@ type Storer interface {
 	Linhas() (model.Linhas, error)
 	Linha(codigo string) (model.Linha, error)
 	Veiculos() (model.Veiculos, error)
-	// Veiculo(codigo string) (model.Veiculo, error)
+	Veiculo(codigo string) (model.Veiculos, error)
 	// VeiculosLinhas(codigoLinha string) (model.Veiculos, error)
 }
