@@ -7,8 +7,8 @@ import (
 // Storer é uma interface que representa as estruturas que terão acesso ao banco de dados.
 type Storer interface {
 	Linhas() (model.Linhas, error)
-	Veiculos() (model.Veiculos, error)
 	Linha(codigo string) (model.Linha, error)
-	Veiculo(codigo string) (model.Veiculo, error)
-	VeiculosLinhas(codigoLinha string) (model.Veiculos, error)
+	// Veiculos() (model.Veiculos, error)
+	// Veiculo(codigo string) (model.Veiculo, error)
+	// VeiculosLinhas(codigoLinha string) (model.Veiculos, error)
 }
