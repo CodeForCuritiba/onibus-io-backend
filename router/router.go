@@ -76,5 +76,15 @@ func veiculosRoutes(s store.Storer) chi.Router {
 		}
 		json.NewEncoder(w).Encode(veiculo)
 	})
+	r.Get("/linha/{codigo}", func(w http.ResponseWriter, r *http.Request) {
+		codigo := chi.URLParam(r, "codigo")
+		veiculos, err := s.VeiculosLinha(codigo)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(err)
+			return
+		}
+		json.NewEncoder(w).Encode(veiculos)
+	})
 	return r
 }

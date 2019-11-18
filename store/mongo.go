@@ -71,10 +71,29 @@ func (ms *MongoStore) Veiculos() (veiculos model.Veiculos, err error) {
 	return
 }
 
-// Linhas retorna uma lista de veiculo por codigo
+// Veiculo retorna uma lista de veiculo por codigo
 func (ms *MongoStore) Veiculo(codigo string) (veiculos model.Veiculos, err error) {
 
 	cur, err := ms.db.Collection("veiculos").Find(ms.ctx, bson.M{"cod": codigo})
+	if err != nil {
+		return
+	}
+	for cur.Next(ms.ctx) {
+		var veiculo model.Veiculo
+		err = cur.Decode(&veiculo)
+		if err != nil {
+			veiculos = model.Veiculos{}
+			return
+		}
+		veiculos = append(veiculos, veiculo)
+	}
+	return
+}
+
+// VeiculosLinha retorna uma lista dos veiculos de uma linha
+func (ms *MongoStore) VeiculosLinha(codigo string) (veiculos model.Veiculos, err error) {
+
+	cur, err := ms.db.Collection("veiculos").Find(ms.ctx, bson.M{"codigolinha": codigo})
 	if err != nil {
 		return
 	}
