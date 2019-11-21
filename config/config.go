@@ -4,18 +4,14 @@ package config
 import "os"
 
 const (
-	prefix     = "CWBUS_"
-	serviceURL = "URBS_SERVICE_URL"
-	urbsCode   = "URBS_CODE"
-	dbStrConn  = "DB_URL"
-	dbName     = "DB_HIST"
-	port       = "PORT"
+	prefix    = "ONIBUSIO_"
+	dbStrConn = "DB_URL"
+	dbName    = "DB_HIST"
+	port      = "PORT"
 )
 
 // Configurer é a interface que define um configurador no sistema.
 type Configurer interface {
-	ServiceURL() string
-	UrbsCode() string
 	DBName() string
 	DBStrConn() string
 	Port() string
@@ -30,16 +26,6 @@ func (ec EnvConfigurer) key(name string) string {
 
 func (ec EnvConfigurer) getValue(name string) string {
 	return os.Getenv(ec.key(name))
-}
-
-// ServiceURL retorna a URL dos serviços da urbs.
-func (ec EnvConfigurer) ServiceURL() string {
-	return ec.getValue(serviceURL)
-}
-
-// UrbsCode retorna o código urbs de acesso aos serviços.
-func (ec EnvConfigurer) UrbsCode() string {
-	return ec.getValue(urbsCode)
 }
 
 // DBStrConn retorna a string de conexão do banco de dados.
