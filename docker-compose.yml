@@ -1,0 +1,29 @@
+---
+version: "3.7"
+
+services:
+  mongodb:
+    image: mongo:latest
+    networks:
+      - code4cwb_lan
+  web:
+    environment:
+      ONIBUSIO_DB_HIST: onibus-historico
+      ONIBUSIO_DB_URL: mongodb+srv://mongodb/onibus-historico
+      PORT: 3000
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
+    networks:
+      - code4cwb_lan
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    depends_on:
+      - mongodb
+
+networks:
+  code4cwb_lan:
+    driver: bridge
