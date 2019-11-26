@@ -1,10 +1,14 @@
 #!/bin/sh
+#*
+#* Arquivo de carga de dados: Baixa o zip do GITHUB e aplica as configurações no servidor mongo DB;
+#* Este comando é executado por meio do arquivo do docker-compose.yml.
+#*
 
 LOCK_FILE="data_imported.lock";
 
 if [ -f "${LOCK_FILE}" ]
 then
-  echo "Arquivo ja importado.";
+  echo "Arquivo ja importado. Encerrando importador";
   exit 0;
 fi
 
@@ -25,4 +29,4 @@ rm -Rf onibus_io_data;
 
 date > $LOCK_FILE;
 
-echo "Dados carregados!";
+echo "Base de dados carregada com sucesso";
