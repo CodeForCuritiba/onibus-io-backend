@@ -6,6 +6,19 @@ services:
     image: mongo:latest
     networks:
       - code4cwb_lan
+  mongodbimport:
+    environment:
+      MONGODB_SERVER: mongodbsrv
+      MONGODB_DATABASE: onibus-historico
+    image: mongo:latest
+    networks:
+      - code4cwb_lan
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: ./load_data.sh
+    depends_on:
+      - mongodbsrv
   web:
     environment:
       ONIBUSIO_DB_HIST: onibus-historico
@@ -22,7 +35,7 @@ services:
       - .:/app
     depends_on:
       - mongodbsrv
-
+      - mongodbimport
 networks:
   code4cwb_lan:
     driver: bridge
