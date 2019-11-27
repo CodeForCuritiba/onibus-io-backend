@@ -26,7 +26,6 @@ jobs:
         - docker-compose up -d
         - curl -v http://localhost:3000/api/linhas
         - curl -v http://localhost:3000/api/veiculos
-
       # - stage: Deploy project to DockerHUB
     #   if: type = push && branch = master
     #   before_script:
