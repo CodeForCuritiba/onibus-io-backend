@@ -15,7 +15,6 @@ branches:
 jobs:
   include:
     - stage: Test build on project; smoketest
-      if: type = pull_request
       before_script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - sudo rm /usr/local/bin/docker-compose
@@ -23,25 +22,23 @@ jobs:
         - sudo chmod +x /usr/local/bin/docker-compose
       script:
         - docker-compose up -d --build
-        - docker inspect onibus-io-backend_web
-        - curl -v http://127.0.0.1:3000/api/linhas
-        - curl -v http://127.0.0.1:3000/api/veiculos
-      # - stage: Deploy project to DockerHUB
-    #   if: type = push && branch = master
-    #   before_script:
-    #     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    #     - docker build -t onibus-io-frontend .
-    #     - docker tag onibus-io-frontend $DOCKER_USERNAME/onibus-io-frontend:$(cat VERSION)
-    #     - docker tag onibus-io-frontend $DOCKER_USERNAME/onibus-io-frontend:latest
-    #   script:
-    #     - docker push $DOCKER_USERNAME/onibus-io-frontend:$(cat VERSION)
-    #     - docker push $DOCKER_USERNAME/onibus-io-frontend:latest
+        - docker-compose down
+    - stage: Deploy project to DockerHUB
+      if: type = push && branch = master
+      before_script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker build -t onibus-io-backend .
+        - docker tag onibus-io-backend $DOCKER_USERNAME/onibus-io-backend:$(cat VERSION)
+        - docker tag onibus-io-backend $DOCKER_USERNAME/onibus-io-backend:latest
+      script:
+        - docker push $DOCKER_USERNAME/onibus-io-backend:$(cat VERSION)
+        - docker push $DOCKER_USERNAME/onibus-io-backend:latest
     # - stage: Deploy to production server
-    #   if: type = push && branch = master
-    #   before_script:
-    #     - pip install pipenv
-    #     - openssl aes-256-cbc -K $encrypted_f4b4a98bdc3f_key -iv $encrypted_f4b4a98bdc3f_iv -in deploy/id_rsa.enc -out deploy/id_rsa -d
-    #   script:
-    #     - cd deploy
+      # if: type = push && branch = master
+      # before_script:
+        # - pip install pipenv
+        # - openssl aes-256-cbc -K $encrypted_f4b4a98bdc3f_key -iv $encrypted_f4b4a98bdc3f_iv -in deploy/id_rsa.enc -out deploy/id_rsa -d
+      # script:
+        # - cd deploy
         # - ./run.sh
-        #- docker run --rm -v $(pwd):/data joepreludian/python-pipenv ./run.sh
+        # - docker run --rm -v $(pwd):/data joepreludian/python-pipenv ./run.sh
