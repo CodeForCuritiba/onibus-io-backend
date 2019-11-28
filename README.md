@@ -1,5 +1,5 @@
 # Onibus-io-backend
-[![Build Status](https://travis-ci.org/CodeForCuritiba/onibus-io-backend.svg?branch=master)](https://travis-ci.org/CodeForCuritiba/onibus-io-backend)[![Build Status](https://travis-ci.org/CodeForCuritiba/onibus-io-backend.svg?branch=master)](https://travis-ci.org/CodeForCuritiba/onibus-io-backend)
+[![Build Status](https://travis-ci.org/CodeForCuritiba/onibus-io-backend.svg?branch=master)](https://travis-ci.org/CodeForCuritiba/onibus-io-backend)
 Sistema em GO que cuida do fornecimento dos dados para a aplicação frontent do Onibus-io.
 
 ## Desenvolvendo
