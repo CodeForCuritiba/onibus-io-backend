@@ -33,12 +33,11 @@ jobs:
       script:
         - docker push $DOCKER_USERNAME/onibus-io-backend:$(cat VERSION)
         - docker push $DOCKER_USERNAME/onibus-io-backend:latest
-    # - stage: Deploy to production server
-      # if: type = push && branch = master
-      # before_script:
-        # - pip install pipenv
-        # - openssl aes-256-cbc -K $encrypted_f4b4a98bdc3f_key -iv $encrypted_f4b4a98bdc3f_iv -in deploy/id_rsa.enc -out deploy/id_rsa -d
-      # script:
-        # - cd deploy
-        # - ./run.sh
-        # - docker run --rm -v $(pwd):/data joepreludian/python-pipenv ./run.sh
+    - stage: Deploy to production server
+      if: type = push && branch = master
+      before_script:
+        - pip install pipenv
+        - openssl aes-256-cbc -K $encrypted_b0fc5fc1e8ae_key -iv $encrypted_b0fc5fc1e8ae_iv -in deploy/id_rsa.enc -out deploy/id_rsa -d
+      script:
+        - cd deploy
+        - ./run.sh
