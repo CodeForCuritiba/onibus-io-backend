@@ -1,5 +1,9 @@
 # Changelog
 
+0.3.0
+-----
+- Adicionar notificador no grupo do telegram do Code for Curitiba - Projetos
+
 0.2.0
 -----
 - Adicionar pipeline para CD em servidor provisório
