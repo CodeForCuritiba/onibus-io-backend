@@ -18,8 +18,8 @@ type MongoStore struct {
 }
 
 // NewMongoStore cria uma Store para uma base de dados mongodb.
-func NewMongoStore(ctx context.Context, client *mongo.Client, config config.Configurer) (store Storer) {
-	store = &MongoStore{client: client, db: client.Database(config.DBName())}
+func NewMongoStore(ctx context.Context, client *mongo.Client, config config.Configuration) (store Storer) {
+	store = &MongoStore{client: client, db: client.Database(config.MongoDB.DBName)}
 	return
 }
 
