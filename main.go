@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/99designs/gqlgen/handler"
 	"github.com/codeforcuritiba/onibus-io-backend/config"
+	"github.com/codeforcuritiba/onibus-io-backend/resolver"
 	"github.com/codeforcuritiba/onibus-io-backend/db"
-	"github.com/codeforcuritiba/onibus-io-backend/router"
+	"github.com/codeforcuritiba/onibus-io-backend/graphql"
 	"github.com/codeforcuritiba/onibus-io-backend/store"
 	"github.com/luizvnasc/gonfig"
 )
@@ -31,10 +32,10 @@ func main() {
 	s := store.NewMongoStore(ctx, client, config)
 	log.Println("Store criada com sucesso")
 
-	log.Println("Criando rotas...")
-	r := router.NewRouter(s)
-	log.Println("Rotas criadas")
-	log.Printf("Iniciando servidor na porta %s\n", config.Port)
-	http.ListenAndServe(fmt.Sprintf(":%s", config.Port), r)
+	http.Handle("/", handler.Playground("GraphQL playground", "/query"))
+	http.Handle("/query", handler.GraphQL(graphql.NewExecutableSchema(graphql.Config{Resolvers: &resolver.Resolver{s}})))
+
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", config.Port)
+	log.Fatal(http.ListenAndServe(":"+config.Port, nil))
 
 }

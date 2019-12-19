@@ -1,0 +1,58 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Linha {
+  codigo: String!
+  nome: String!
+  somente_cartao: String!
+  categoria_servico: String!
+  cor: String!
+  pontos: [Ponto!]!
+  tabela: [Parada!]!
+  """
+  As últimas duas posições dos veículos da linha
+  """
+  veiculos: [Veiculo!]!
+}
+
+type Ponto {
+  nome: String!
+  numero: String!
+  latitude: String!
+  longitude: String!
+  sequencia: String!
+  grupo: String!
+  tipo: String!
+  sentido: String!
+  id_itinerario: String!
+}
+
+type Parada {
+  hora: String!
+  ponto: String!
+  dia: String!
+  num: String!
+  tabela: String!
+  adaptado: String!
+}
+
+type Veiculo {
+  codigo: String!
+  refresh: String!
+  latitude: String!
+  longitude: String!
+  codigo_linha: String!
+  adaptado: String!
+  tipo: String!
+  tabela: String!
+  situacao: String!
+  situacao2: String!
+  tcount: Int!
+  sent: String!
+}
+
+type Query {
+  linhas: [Linha!]!
+  linha(codigo: String!): Linha
+}

@@ -12,15 +12,15 @@ import "time"
 //
 type Linha struct {
 	//ID               primitive.ObjectID `json:"_id" bson:"_id"`
-	Codigo           string `json:"cod" bson:"cod"`                             //Código da linha
-	Nome             string `json:"nome" bson:"nome"`                           //  Nome da linha (UTF-8)
-	SomenteCartao    string `json:"somente_cartao" bson:"somente_cartao"`       // S: Sim, N: Não, F: Finais de Semana
-	CategoriaServico string `json:"categoria_servico" bson:"categoria_servico"` //Categoria da Linha (UTF-8)
-	Cor              string `json:"nome_cor" bson:"cor"`                        // Cor do ônibus
-	CriadoEm         int64  `json:"criado_em" bson:"criado_em"`                 //Data de criação do registro
-	AtualizadoEm     int64  `json:"atualizado_em" bson:"atualizado_em"`         // Data de atualização do registro
-	Pontos           Pontos `json:"pontos,omitempty" bson:"pontos"`             // Pontos da Linha
-	Tabela           Tabela `json:"tabela,omitempty" bson:"tabela"`             // Tabela da linha
+	Codigo           string    `json:"cod" bson:"cod"`                             //Código da linha
+	Nome             string    `json:"nome" bson:"nome"`                           //  Nome da linha (UTF-8)
+	SomenteCartao    string    `json:"somente_cartao" bson:"somente_cartao"`       // S: Sim, N: Não, F: Finais de Semana
+	CategoriaServico string    `json:"categoria_servico" bson:"categoria_servico"` //Categoria da Linha (UTF-8)
+	Cor              string    `json:"nome_cor" bson:"cor"`                        // Cor do ônibus
+	CriadoEm         int64     `json:"criado_em" bson:"criado_em"`                 //Data de criação do registro
+	AtualizadoEm     int64     `json:"atualizado_em" bson:"atualizado_em"`         // Data de atualização do registro
+	Pontos           []*Ponto  `json:"pontos,omitempty" bson:"pontos"`             // Pontos da Linha
+	Tabela           []*Parada `json:"tabela,omitempty" bson:"tabela"`             // Tabela da linha
 }
 
 // Linhas é um slice de linhas. Criado apenas para melhorar a leitura do código
