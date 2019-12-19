@@ -3,12 +3,33 @@
 # https://gqlgen.com/getting-started/
 
 type Linha {
+  """
+  Código da linha
+  """
   codigo: String!
+  """
+  Nome da linha
+  """
   nome: String!
+  """
+  S: Sim, N: Não, F: Finais de Semana
+  """
   somente_cartao: String!
+  """
+  Categoria da linha
+  """
   categoria_servico: String!
+  """
+  Cor do ônibus
+  """
   cor: String!
+  """
+  Pontos da linha
+  """
   pontos: [Ponto!]!
+  """
+  Tabela com os horários da linha
+  """
   tabela: [Parada!]!
   """
   As últimas duas posições dos veículos da linha
@@ -17,38 +38,116 @@ type Linha {
 }
 
 type Ponto {
+  """
+  Nome do ponto
+  """
   nome: String!
+  """
+  Número do ponto
+  """
   numero: String!
+  """
+  Latitude da posição geografica do ponto
+  """
   latitude: String!
+  """
+  Longitude da posição geografica do ponto
+  """
   longitude: String!
+  """
+  Sequência do Ponto
+  """
   sequencia: String!
+  """
+  Agrupadores de pontos
+  """
   grupo: String!
+  """
+  Tipo do ponto
+  """
   tipo: String!
   sentido: String!
+  """
+  Identificador do itinerario
+  """
   id_itinerario: String!
 }
 
 type Parada {
+  """
+  Hora de parada
+  """
   hora: String!
+  """
+  Nome do ponto
+  """
   ponto: String!
+  """
+  Tipo do Dia (1 - Dia Útil, 2 - Sábado, 3 - Domingo, 4 - Feriado)
+  """
   dia: String!
+  """
+  Número do ponto (de regulagem)
+  """
   num: String!
+  """
+  Número da tabela horária
+  """
   tabela: String!
+  """
+  Informa se o ônibus tem algum tipo de adaptação para pessoas especiais
+  """
   adaptado: String!
 }
 
 type Veiculo {
+  """
+  Prefixo do veículo
+  """
   codigo: String!
+  """
+  Hora da Atualização (HH24:MI)
+  """
   refresh: String!
+  """
+  Latitude (ponto flutuante)
+  """
   latitude: String!
+  """
+  Longitude (ponto flutuante)
+  """
   longitude: String!
+  """
+  Prefixo da Linha (3 caracteres)
+  """
   codigo_linha: String!
+  """
+  Adaptado para cadeirantes (1 para sim, 0 para não)
+  """
   adaptado: String!
+  """
+  Tipo do ônibus {1:'COMUM',2:'SEMI PADRON', 3 :'PADRON',4 :'ARTICULADO',5 :'BIARTICULADO',6 :'MICRO', 7 :'MICRO ESPECIAL',8 :'BIARTIC. BIO',9 :'ARTIC. BIO',10:'HIBRIDO',11:'HIBRIDO BIO',12:'ELÉTRICO}'}
+  """
   tipo: String!
+  """
+  Tabela que o veículo está executando
+  """
   tabela: String!
+  """
+  Situação processada do veículo
+  """
   situacao: String!
+  """
+  Situação processada do veículo
+  """
   situacao2: String!
+  """
+  Contador de ciclos sem atulizar informação do veículo (informação atualizada 1)
+  """
   tcount: Int!
+  """
+  Direção do  veículo
+  """
   sent: String!
 }
 
