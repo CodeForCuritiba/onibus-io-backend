@@ -11,14 +11,16 @@ import (
 	"github.com/codeforcuritiba/onibus-io-backend/db"
 	"github.com/codeforcuritiba/onibus-io-backend/router"
 	"github.com/codeforcuritiba/onibus-io-backend/store"
+	"github.com/luizvnasc/gonfig"
 )
 
 func main() {
-	config := &config.EnvConfigurer{}
+	config := config.Configuration{}
+	gonfig.Load(&config)
 
 	log.Println("Criando cliente mongodb...")
 	ctx := context.Background()
-	client, err := db.NewMongoClient(ctx, config.DBStrConn())
+	client, err := db.NewMongoClient(ctx, config.MongoDB.StrConn)
 	if err != nil {
 		log.Fatalf("Erro ao conectar no banco: %q", err)
 		os.Exit(1)
@@ -32,7 +34,7 @@ func main() {
 	log.Println("Criando rotas...")
 	r := router.NewRouter(s)
 	log.Println("Rotas criadas")
-	log.Printf("Iniciando servidor na porta %s\n", config.Port())
-	http.ListenAndServe(fmt.Sprintf(":%s", config.Port()), r)
+	log.Printf("Iniciando servidor na porta %s\n", config.Port)
+	http.ListenAndServe(fmt.Sprintf(":%s", config.Port), r)
 
 }
