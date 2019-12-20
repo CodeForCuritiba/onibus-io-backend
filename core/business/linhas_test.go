@@ -40,6 +40,16 @@ func TestLinhaBusiness(t *testing.T) {
 			t.Errorf("Esperava-se linha %v, obteve-se %v", nil, linha)
 		}
 	})
+
+	t.Run("Retorna os veiculos de uma linha", func(t *testing.T) {
+		veiculos, err := linhaBO.VeiculosLinha("666")
+		if err != nil {
+			t.Fatalf("Erro ao obter veiculos de uma linha: %v", err)
+		}
+		if len(veiculos) != len(mockVeiculos) {
+			t.Errorf("Esperava-se %d veiculos, obteve-se %d", len(mockVeiculos), len(veiculos))
+		}
+	})
 }
 
 type mockStore struct {
@@ -58,6 +68,15 @@ func (ms mockStore) Linha(codigo string) (*model.Linha, error) {
 	return nil, errors.New("Linha não encontrada")
 }
 
+func (ms mockStore) VeiculosLinha(codigoLinha string) (veiculos []*model.Veiculo, err error) {
+	for _, veiculo := range mockVeiculos {
+		if veiculo.CodigoLinha == codigoLinha {
+			veiculos = append(veiculos, veiculo)
+		}
+	}
+	return
+}
+
 var mockLinhas = []*model.Linha{
 	&model.Linha{
 		Codigo: "666",
@@ -67,5 +86,16 @@ var mockLinhas = []*model.Linha{
 	},
 	&model.Linha{
 		Codigo: "668",
+	},
+}
+
+var mockVeiculos = []*model.Veiculo{
+	&model.Veiculo{
+		Codigo:      "123",
+		CodigoLinha: "666",
+	},
+	&model.Veiculo{
+		Codigo:      "323",
+		CodigoLinha: "666",
 	},
 }

@@ -10,11 +10,11 @@ import (
 type Storer interface {
 	Veiculos() (model.Veiculos, error)
 	Veiculo(codigo string) (model.Veiculos, error)
-	VeiculosLinha(codigoLinha string) ([]*model.Veiculo, error)
 }
 
 // LinhaStorer é uma interface que representa a fronteira de comunicação para se obter as linhas.
 type LinhaStorer interface {
 	Linhas() ([]*model.Linha, error)
 	Linha(codigo string) (*model.Linha, error)
+	VeiculosLinha(codigoLinha string) ([]*model.Veiculo, error)
 }
