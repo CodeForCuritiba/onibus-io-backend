@@ -7,7 +7,6 @@ import (
 	"github.com/codeforcuritiba/onibus-io-backend/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // MongoStore é uma store que se comunica com uma base de dados mongodb.
@@ -24,21 +23,16 @@ func NewMongoStore(ctx context.Context, client *mongo.Client, config config.Conf
 }
 
 // Linhas retorna uma lista de linhas sem seus pontos e suas tabelas.
-func (ms *MongoStore) Linhas() (linhas model.Linhas, err error) {
-	projection := map[string]int{
-		"_id":    0,
-		"pontos": 0,
-		"tabela": 0,
-	}
-	cur, err := ms.db.Collection("linhas").Find(ms.ctx, bson.D{}, &options.FindOptions{Projection: projection})
+func (ms *MongoStore) Linhas() (linhas []*model.Linha, err error) {
+	cur, err := ms.db.Collection("linhas").Find(ms.ctx, bson.D{})
 	if err != nil {
 		return
 	}
 	for cur.Next(ms.ctx) {
-		var linha model.Linha
+		var linha *model.Linha
 		err = cur.Decode(&linha)
 		if err != nil {
-			linhas = model.Linhas{}
+			linhas = []*model.Linha{}
 			return
 		}
 		linhas = append(linhas, linha)
@@ -47,7 +41,7 @@ func (ms *MongoStore) Linhas() (linhas model.Linhas, err error) {
 }
 
 // Linha busca uma linha através do código
-func (ms *MongoStore) Linha(codigo string) (linha model.Linha, err error) {
+func (ms *MongoStore) Linha(codigo string) (linha *model.Linha, err error) {
 	err = ms.db.Collection("linhas").FindOne(ms.ctx, map[string]string{"cod": codigo}).Decode(&linha)
 	return
 }
@@ -91,7 +85,7 @@ func (ms *MongoStore) Veiculo(codigo string) (veiculos model.Veiculos, err error
 }
 
 // VeiculosLinha retorna uma lista dos veiculos de uma linha
-func (ms *MongoStore) VeiculosLinha(codigo string) (veiculos model.Veiculos, err error) {
+func (ms *MongoStore) VeiculosLinha(codigo string) (veiculos []*model.Veiculo, err error) {
 
 	cur, err := ms.db.Collection("veiculos").Find(ms.ctx, bson.M{"codigolinha": codigo})
 	if err != nil {
@@ -101,10 +95,10 @@ func (ms *MongoStore) VeiculosLinha(codigo string) (veiculos model.Veiculos, err
 		var veiculo model.Veiculo
 		err = cur.Decode(&veiculo)
 		if err != nil {
-			veiculos = model.Veiculos{}
+			veiculos = []*model.Veiculo{}
 			return
 		}
-		veiculos = append(veiculos, veiculo)
+		veiculos = append(veiculos, &veiculo)
 	}
 	return
 }
