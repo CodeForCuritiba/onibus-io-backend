@@ -8,33 +8,39 @@ import (
 	"github.com/codeforcuritiba/onibus-io-backend/core/model"
 )
 
+// Resolver das queries graphql
 type Resolver struct {
 	LinhaBO *business.LinhaBO
 }
 
+// Query resolver
 func (r *Resolver) Query() QueryResolver {
 	return &queryResolver{r}
 }
 
-// func (r *Resolver) Linha() LinhaResolver {
-// 	return &linhaResolver{r}
-// }
-
-type mutationResolver struct{ *Resolver }
+// Linha resolver
+func (r *Resolver) Linha() LinhaResolver {
+	return &linhaResolver{r}
+}
 
 type queryResolver struct{ *Resolver }
 
+// Linhas query retorna lista de linhas
 func (r *queryResolver) Linhas(ctx context.Context) ([]*model.Linha, error) {
 	return r.LinhaBO.Linhas()
 }
 
+// Linha query retorna linha por código
 func (r *queryResolver) Linha(ctx context.Context, codigo string) (*model.Linha, error) {
 	return r.LinhaBO.Linha(codigo)
 }
 
+type mutationResolver struct{ *Resolver }
+
 type linhaResolver struct{ *Resolver }
 
-// func (l *linhaResolver) Veiculos(ctx context.Context, linha *model.Linha) ([]*model.Veiculo, error) {
-// 	veiculos, err := l.Store.VeiculosLinha(linha.Codigo)
-// 	return veiculos, err
-// }
+// Veiculos resolve o field Veiculos de linhas
+func (l *linhaResolver) Veiculos(ctx context.Context, linha *model.Linha) ([]*model.Veiculo, error) {
+	veiculos, err := l.LinhaBO.VeiculosLinha(linha.Codigo)
+	return veiculos, err
+}

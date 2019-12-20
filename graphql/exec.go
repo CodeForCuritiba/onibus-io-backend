@@ -35,6 +35,7 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Linha() LinhaResolver
 	Query() QueryResolver
 }
 
@@ -50,6 +51,7 @@ type ComplexityRoot struct {
 		Pontos           func(childComplexity int) int
 		SomenteCartao    func(childComplexity int) int
 		Tabela           func(childComplexity int) int
+		Veiculos         func(childComplexity int) int
 	}
 
 	Parada struct {
@@ -94,6 +96,9 @@ type ComplexityRoot struct {
 	}
 }
 
+type LinhaResolver interface {
+	Veiculos(ctx context.Context, obj *model.Linha) ([]*model.Veiculo, error)
+}
 type QueryResolver interface {
 	Linhas(ctx context.Context) ([]*model.Linha, error)
 	Linha(ctx context.Context, codigo string) (*model.Linha, error)
@@ -162,6 +167,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Linha.Tabela(childComplexity), true
+
+	case "Linha.veiculos":
+		if e.complexity.Linha.Veiculos == nil {
+			break
+		}
+
+		return e.complexity.Linha.Veiculos(childComplexity), true
 
 	case "Parada.adaptado":
 		if e.complexity.Parada.Adaptado == nil {
@@ -453,10 +465,10 @@ type Linha {
   Tabela com os horários da linha
   """
   tabela: [Parada!]!
-  # """
-  # As últimas duas posições dos veículos da linha
-  # """
-  #veiculos: [Veiculo!]!
+  """
+  As últimas duas posições dos veículos da linha
+  """
+  veiculos: [Veiculo!]!
 }
 
 type Ponto {
@@ -905,6 +917,43 @@ func (ec *executionContext) _Linha_tabela(ctx context.Context, field graphql.Col
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNParada2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐParadaᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Linha_veiculos(ctx context.Context, field graphql.CollectedField, obj *model.Linha) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Linha",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Linha().Veiculos(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Veiculo)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNVeiculo2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐVeiculoᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Parada_hora(ctx context.Context, field graphql.CollectedField, obj *model.Parada) (ret graphql.Marshaler) {
@@ -3232,38 +3281,52 @@ func (ec *executionContext) _Linha(ctx context.Context, sel ast.SelectionSet, ob
 		case "codigo":
 			out.Values[i] = ec._Linha_codigo(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "nome":
 			out.Values[i] = ec._Linha_nome(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "somente_cartao":
 			out.Values[i] = ec._Linha_somente_cartao(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "categoria_servico":
 			out.Values[i] = ec._Linha_categoria_servico(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "cor":
 			out.Values[i] = ec._Linha_cor(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "pontos":
 			out.Values[i] = ec._Linha_pontos(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "tabela":
 			out.Values[i] = ec._Linha_tabela(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
+		case "veiculos":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Linha_veiculos(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3969,6 +4032,57 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNVeiculo2githubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐVeiculo(ctx context.Context, sel ast.SelectionSet, v model.Veiculo) graphql.Marshaler {
+	return ec._Veiculo(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNVeiculo2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐVeiculoᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Veiculo) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNVeiculo2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐVeiculo(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNVeiculo2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐVeiculo(ctx context.Context, sel ast.SelectionSet, v *model.Veiculo) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Veiculo(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
