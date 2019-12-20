@@ -1,15 +1,15 @@
 exec:
   filename: graphql/exec.go
 schema:
-  - "schemas/*.graphql"
+  - "graphql/*.graphql"
 models:
   Linha:
-    model: github.com/codeforcuritiba/onibus-io-backend/model.Linha
+    model: github.com/codeforcuritiba/onibus-io-backend/core/model.Linha
   Veiculo:
-    model: github.com/codeforcuritiba/onibus-io-backend/model.Veiculo
+    model: github.com/codeforcuritiba/onibus-io-backend/core/model.Veiculo
   Ponto:
-    model: github.com/codeforcuritiba/onibus-io-backend/model.Ponto
+    model: github.com/codeforcuritiba/onibus-io-backend/core/model.Ponto
   Parada:
-    model: github.com/codeforcuritiba/onibus-io-backend/model.Parada
+    model: github.com/codeforcuritiba/onibus-io-backend/core/model.Parada
 resolver:
-  filename: resolver/resolver.go # where to write them
+  filename: graphql/resolver.go # where to write them
