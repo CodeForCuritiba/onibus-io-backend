@@ -12,7 +12,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/codeforcuritiba/onibus-io-backend/model"
+	"github.com/codeforcuritiba/onibus-io-backend/core/model"
 	"github.com/vektah/gqlparser"
 	"github.com/vektah/gqlparser/ast"
 )
@@ -432,17 +432,38 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var parsedSchema = gqlparser.MustLoadSchema(
-	&ast.Source{Name: "schemas/schemas.graphql", Input: `# GraphQL schema example
+	&ast.Source{Name: "graphql/schemas.graphql", Input: `# GraphQL schema example
 #
 # https://gqlgen.com/getting-started/
 
 type Linha {
+  """
+  Código da linha
+  """
   codigo: String!
+  """
+  Nome da linha
+  """
   nome: String!
+  """
+  S: Sim, N: Não, F: Finais de Semana
+  """
   somente_cartao: String!
+  """
+  Categoria da linha
+  """
   categoria_servico: String!
+  """
+  Cor do ônibus
+  """
   cor: String!
+  """
+  Pontos da linha
+  """
   pontos: [Ponto!]!
+  """
+  Tabela com os horários da linha
+  """
   tabela: [Parada!]!
   """
   As últimas duas posições dos veículos da linha
@@ -451,38 +472,116 @@ type Linha {
 }
 
 type Ponto {
+  """
+  Nome do ponto
+  """
   nome: String!
+  """
+  Número do ponto
+  """
   numero: String!
+  """
+  Latitude da posição geografica do ponto
+  """
   latitude: String!
+  """
+  Longitude da posição geografica do ponto
+  """
   longitude: String!
+  """
+  Sequência do Ponto
+  """
   sequencia: String!
+  """
+  Agrupadores de pontos
+  """
   grupo: String!
+  """
+  Tipo do ponto
+  """
   tipo: String!
   sentido: String!
+  """
+  Identificador do itinerario
+  """
   id_itinerario: String!
 }
 
 type Parada {
+  """
+  Hora de parada
+  """
   hora: String!
+  """
+  Nome do ponto
+  """
   ponto: String!
+  """
+  Tipo do Dia (1 - Dia Útil, 2 - Sábado, 3 - Domingo, 4 - Feriado)
+  """
   dia: String!
+  """
+  Número do ponto (de regulagem)
+  """
   num: String!
+  """
+  Número da tabela horária
+  """
   tabela: String!
+  """
+  Informa se o ônibus tem algum tipo de adaptação para pessoas especiais
+  """
   adaptado: String!
 }
 
 type Veiculo {
+  """
+  Prefixo do veículo
+  """
   codigo: String!
+  """
+  Hora da Atualização (HH24:MI)
+  """
   refresh: String!
+  """
+  Latitude (ponto flutuante)
+  """
   latitude: String!
+  """
+  Longitude (ponto flutuante)
+  """
   longitude: String!
+  """
+  Prefixo da Linha (3 caracteres)
+  """
   codigo_linha: String!
+  """
+  Adaptado para cadeirantes (1 para sim, 0 para não)
+  """
   adaptado: String!
+  """
+  Tipo do ônibus {1:'COMUM',2:'SEMI PADRON', 3 :'PADRON',4 :'ARTICULADO',5 :'BIARTICULADO',6 :'MICRO', 7 :'MICRO ESPECIAL',8 :'BIARTIC. BIO',9 :'ARTIC. BIO',10:'HIBRIDO',11:'HIBRIDO BIO',12:'ELÉTRICO}'}
+  """
   tipo: String!
+  """
+  Tabela que o veículo está executando
+  """
   tabela: String!
+  """
+  Situação processada do veículo
+  """
   situacao: String!
+  """
+  Situação processada do veículo
+  """
   situacao2: String!
+  """
+  Contador de ciclos sem atulizar informação do veículo (informação atualizada 1)
+  """
   tcount: Int!
+  """
+  Direção do  veículo
+  """
   sent: String!
 }
 
@@ -780,7 +879,7 @@ func (ec *executionContext) _Linha_pontos(ctx context.Context, field graphql.Col
 	res := resTmp.([]*model.Ponto)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNPonto2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐPontoᚄ(ctx, field.Selections, res)
+	return ec.marshalNPonto2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐPontoᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Linha_tabela(ctx context.Context, field graphql.CollectedField, obj *model.Linha) (ret graphql.Marshaler) {
@@ -817,7 +916,7 @@ func (ec *executionContext) _Linha_tabela(ctx context.Context, field graphql.Col
 	res := resTmp.([]*model.Parada)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNParada2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐParadaᚄ(ctx, field.Selections, res)
+	return ec.marshalNParada2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐParadaᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Linha_veiculos(ctx context.Context, field graphql.CollectedField, obj *model.Linha) (ret graphql.Marshaler) {
@@ -854,7 +953,7 @@ func (ec *executionContext) _Linha_veiculos(ctx context.Context, field graphql.C
 	res := resTmp.([]*model.Veiculo)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNVeiculo2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐVeiculoᚄ(ctx, field.Selections, res)
+	return ec.marshalNVeiculo2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐVeiculoᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Parada_hora(ctx context.Context, field graphql.CollectedField, obj *model.Parada) (ret graphql.Marshaler) {
@@ -1446,7 +1545,7 @@ func (ec *executionContext) _Query_linhas(ctx context.Context, field graphql.Col
 	res := resTmp.([]*model.Linha)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNLinha2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐLinhaᚄ(ctx, field.Selections, res)
+	return ec.marshalNLinha2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐLinhaᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_linha(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1487,7 +1586,7 @@ func (ec *executionContext) _Query_linha(ctx context.Context, field graphql.Coll
 	res := resTmp.(*model.Linha)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOLinha2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐLinha(ctx, field.Selections, res)
+	return ec.marshalOLinha2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐLinha(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3768,11 +3867,11 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
-func (ec *executionContext) marshalNLinha2githubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐLinha(ctx context.Context, sel ast.SelectionSet, v model.Linha) graphql.Marshaler {
+func (ec *executionContext) marshalNLinha2githubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐLinha(ctx context.Context, sel ast.SelectionSet, v model.Linha) graphql.Marshaler {
 	return ec._Linha(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNLinha2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐLinhaᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Linha) graphql.Marshaler {
+func (ec *executionContext) marshalNLinha2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐLinhaᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Linha) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3796,7 +3895,7 @@ func (ec *executionContext) marshalNLinha2ᚕᚖgithubᚗcomᚋcodeforcuritiba�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNLinha2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐLinha(ctx, sel, v[i])
+			ret[i] = ec.marshalNLinha2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐLinha(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3809,7 +3908,7 @@ func (ec *executionContext) marshalNLinha2ᚕᚖgithubᚗcomᚋcodeforcuritiba�
 	return ret
 }
 
-func (ec *executionContext) marshalNLinha2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐLinha(ctx context.Context, sel ast.SelectionSet, v *model.Linha) graphql.Marshaler {
+func (ec *executionContext) marshalNLinha2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐLinha(ctx context.Context, sel ast.SelectionSet, v *model.Linha) graphql.Marshaler {
 	if v == nil {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -3819,11 +3918,11 @@ func (ec *executionContext) marshalNLinha2ᚖgithubᚗcomᚋcodeforcuritibaᚋon
 	return ec._Linha(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNParada2githubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐParada(ctx context.Context, sel ast.SelectionSet, v model.Parada) graphql.Marshaler {
+func (ec *executionContext) marshalNParada2githubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐParada(ctx context.Context, sel ast.SelectionSet, v model.Parada) graphql.Marshaler {
 	return ec._Parada(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNParada2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐParadaᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Parada) graphql.Marshaler {
+func (ec *executionContext) marshalNParada2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐParadaᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Parada) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3847,7 +3946,7 @@ func (ec *executionContext) marshalNParada2ᚕᚖgithubᚗcomᚋcodeforcuritiba�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNParada2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐParada(ctx, sel, v[i])
+			ret[i] = ec.marshalNParada2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐParada(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3860,7 +3959,7 @@ func (ec *executionContext) marshalNParada2ᚕᚖgithubᚗcomᚋcodeforcuritiba�
 	return ret
 }
 
-func (ec *executionContext) marshalNParada2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐParada(ctx context.Context, sel ast.SelectionSet, v *model.Parada) graphql.Marshaler {
+func (ec *executionContext) marshalNParada2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐParada(ctx context.Context, sel ast.SelectionSet, v *model.Parada) graphql.Marshaler {
 	if v == nil {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -3870,11 +3969,11 @@ func (ec *executionContext) marshalNParada2ᚖgithubᚗcomᚋcodeforcuritibaᚋo
 	return ec._Parada(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNPonto2githubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐPonto(ctx context.Context, sel ast.SelectionSet, v model.Ponto) graphql.Marshaler {
+func (ec *executionContext) marshalNPonto2githubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐPonto(ctx context.Context, sel ast.SelectionSet, v model.Ponto) graphql.Marshaler {
 	return ec._Ponto(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPonto2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐPontoᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Ponto) graphql.Marshaler {
+func (ec *executionContext) marshalNPonto2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐPontoᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Ponto) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3898,7 +3997,7 @@ func (ec *executionContext) marshalNPonto2ᚕᚖgithubᚗcomᚋcodeforcuritiba�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPonto2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐPonto(ctx, sel, v[i])
+			ret[i] = ec.marshalNPonto2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐPonto(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3911,7 +4010,7 @@ func (ec *executionContext) marshalNPonto2ᚕᚖgithubᚗcomᚋcodeforcuritiba�
 	return ret
 }
 
-func (ec *executionContext) marshalNPonto2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐPonto(ctx context.Context, sel ast.SelectionSet, v *model.Ponto) graphql.Marshaler {
+func (ec *executionContext) marshalNPonto2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐPonto(ctx context.Context, sel ast.SelectionSet, v *model.Ponto) graphql.Marshaler {
 	if v == nil {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -3935,11 +4034,11 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) marshalNVeiculo2githubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐVeiculo(ctx context.Context, sel ast.SelectionSet, v model.Veiculo) graphql.Marshaler {
+func (ec *executionContext) marshalNVeiculo2githubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐVeiculo(ctx context.Context, sel ast.SelectionSet, v model.Veiculo) graphql.Marshaler {
 	return ec._Veiculo(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNVeiculo2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐVeiculoᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Veiculo) graphql.Marshaler {
+func (ec *executionContext) marshalNVeiculo2ᚕᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐVeiculoᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Veiculo) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3963,7 +4062,7 @@ func (ec *executionContext) marshalNVeiculo2ᚕᚖgithubᚗcomᚋcodeforcuritiba
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNVeiculo2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐVeiculo(ctx, sel, v[i])
+			ret[i] = ec.marshalNVeiculo2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐVeiculo(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3976,7 +4075,7 @@ func (ec *executionContext) marshalNVeiculo2ᚕᚖgithubᚗcomᚋcodeforcuritiba
 	return ret
 }
 
-func (ec *executionContext) marshalNVeiculo2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐVeiculo(ctx context.Context, sel ast.SelectionSet, v *model.Veiculo) graphql.Marshaler {
+func (ec *executionContext) marshalNVeiculo2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐVeiculo(ctx context.Context, sel ast.SelectionSet, v *model.Veiculo) graphql.Marshaler {
 	if v == nil {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -4235,11 +4334,11 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return ec.marshalOBoolean2bool(ctx, sel, *v)
 }
 
-func (ec *executionContext) marshalOLinha2githubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐLinha(ctx context.Context, sel ast.SelectionSet, v model.Linha) graphql.Marshaler {
+func (ec *executionContext) marshalOLinha2githubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐLinha(ctx context.Context, sel ast.SelectionSet, v model.Linha) graphql.Marshaler {
 	return ec._Linha(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOLinha2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋmodelᚐLinha(ctx context.Context, sel ast.SelectionSet, v *model.Linha) graphql.Marshaler {
+func (ec *executionContext) marshalOLinha2ᚖgithubᚗcomᚋcodeforcuritibaᚋonibusᚑioᚑbackendᚋcoreᚋmodelᚐLinha(ctx context.Context, sel ast.SelectionSet, v *model.Linha) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

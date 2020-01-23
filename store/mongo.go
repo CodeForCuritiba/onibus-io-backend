@@ -4,7 +4,8 @@ import (
 	"context"
 
 	"github.com/codeforcuritiba/onibus-io-backend/config"
-	"github.com/codeforcuritiba/onibus-io-backend/model"
+	"github.com/codeforcuritiba/onibus-io-backend/core"
+	"github.com/codeforcuritiba/onibus-io-backend/core/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -17,7 +18,7 @@ type MongoStore struct {
 }
 
 // NewMongoStore cria uma Store para uma base de dados mongodb.
-func NewMongoStore(ctx context.Context, client *mongo.Client, config config.Configuration) (store Storer) {
+func NewMongoStore(ctx context.Context, client *mongo.Client, config config.Configuration) (store core.LinhaStorer) {
 	store = &MongoStore{client: client, db: client.Database(config.MongoDB.DBName)}
 	return
 }
