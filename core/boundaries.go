@@ -17,4 +17,5 @@ type LinhaStorer interface {
 	Linhas() ([]*model.Linha, error)
 	Linha(codigo string) (*model.Linha, error)
 	VeiculosLinha(codigoLinha string) ([]*model.Veiculo, error)
+	TabelaLinha(codigoLinha,numeroPonto string) ([]*model.Parada, error)
 }

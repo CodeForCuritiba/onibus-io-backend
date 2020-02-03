@@ -50,7 +50,7 @@ type ComplexityRoot struct {
 		Nome             func(childComplexity int) int
 		Pontos           func(childComplexity int) int
 		SomenteCartao    func(childComplexity int) int
-		Tabela           func(childComplexity int) int
+		Tabela           func(childComplexity int, numeroPonto string) int
 		Veiculos         func(childComplexity int) int
 	}
 
@@ -97,6 +97,7 @@ type ComplexityRoot struct {
 }
 
 type LinhaResolver interface {
+	Tabela(ctx context.Context, obj *model.Linha, numeroPonto string) ([]*model.Parada, error)
 	Veiculos(ctx context.Context, obj *model.Linha) ([]*model.Veiculo, error)
 }
 type QueryResolver interface {
@@ -166,7 +167,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Linha.Tabela(childComplexity), true
+		args, err := ec.field_Linha_tabela_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Linha.Tabela(childComplexity, args["numero_ponto"].(string)), true
 
 	case "Linha.veiculos":
 		if e.complexity.Linha.Veiculos == nil {
@@ -464,7 +470,7 @@ type Linha {
   """
   Tabela com os horários da linha
   """
-  tabela: [Parada!]!
+  tabela(numero_ponto: String!): [Parada!]!
   """
   As últimas duas posições dos veículos da linha
   """
@@ -595,6 +601,20 @@ type Query {
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Linha_tabela_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["numero_ponto"]; ok {
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["numero_ponto"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -895,13 +915,20 @@ func (ec *executionContext) _Linha_tabela(ctx context.Context, field graphql.Col
 		Object:   "Linha",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Linha_tabela_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Tabela, nil
+		return ec.resolvers.Linha().Tabela(rctx, obj, args["numero_ponto"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3309,10 +3336,19 @@ func (ec *executionContext) _Linha(ctx context.Context, sel ast.SelectionSet, ob
 				atomic.AddUint32(&invalids, 1)
 			}
 		case "tabela":
-			out.Values[i] = ec._Linha_tabela(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Linha_tabela(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "veiculos":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
