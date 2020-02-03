@@ -2,7 +2,7 @@ FROM golang:latest as build
 RUN mkdir /app
 WORKDIR /app
 COPY . /app/
-RUN go build
+RUN go build ./cmd/onibus-io.go -o onibus-io-backend
 
 FROM centos as prod
 RUN mkdir /app

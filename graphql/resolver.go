@@ -2,6 +2,7 @@ package graphql
 
 //go:generate go run github.com/99designs/gqlgen
 import (
+	"log"
 	context "context"
 
 	"github.com/codeforcuritiba/onibus-io-backend/core/business"
@@ -43,4 +44,11 @@ type linhaResolver struct{ *Resolver }
 func (l *linhaResolver) Veiculos(ctx context.Context, linha *model.Linha) ([]*model.Veiculo, error) {
 	veiculos, err := l.LinhaBO.VeiculosLinha(linha.Codigo)
 	return veiculos, err
+}
+
+// Veiculos resolve o field Veiculos de linhas
+func (l *linhaResolver) Tabela(ctx context.Context, linha *model.Linha, numeroPonto string) ([]*model.Parada, error) {
+	log.Printf("num: %q", numeroPonto)
+	tabela, err := l.LinhaBO.Tabela(linha.Codigo, numeroPonto)
+	return tabela, err
 }

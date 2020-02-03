@@ -103,3 +103,36 @@ func (ms *MongoStore) VeiculosLinha(codigo string) (veiculos []*model.Veiculo, e
 	}
 	return
 }
+
+func (ms *MongoStore) TabelaLinha(codigoLinha,numeroPonto string) ([]*model.Parada, error) {
+	pipeline := mongo.Pipeline{
+
+			bson.D{{"$match",bson.D{{"cod",codigoLinha}}}},
+			bson.D{{"$unwind", bson.M{
+					"path": "$tabela",
+					"includeArrayIndex": "string",
+					"preserveNullAndEmptyArrays": false,
+			},
+			}},
+			bson.D{{"$match", bson.M{
+				"tabela.num": numeroPonto,
+				}},
+			},
+			bson.D{{"$replaceRoot", bson.D{{
+					"newRoot", "$tabela",
+			}},
+			}},
+		}
+	
+	cur , err := ms.db.Collection("linhas").Aggregate(ms.ctx,pipeline);
+	if err != nil {
+		return nil, err
+	}
+	var tabela []*model.Parada
+	for cur.Next(ms.ctx){
+		var parada model.Parada
+		cur.Decode(&parada)
+		tabela = append(tabela,&parada)
+	}
+	return tabela, nil
+}

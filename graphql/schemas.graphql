@@ -30,7 +30,7 @@ type Linha {
   """
   Tabela com os horários da linha
   """
-  tabela: [Parada!]!
+  tabela(numero_ponto: String!): [Parada!]!
   """
   As últimas duas posições dos veículos da linha
   """

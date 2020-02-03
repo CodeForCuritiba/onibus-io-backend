@@ -30,3 +30,7 @@ func (l LinhaBO) Linha(codigo string) (*model.Linha, error) {
 func (l LinhaBO) VeiculosLinha(codigo string) ([]*model.Veiculo, error) {
 	return l.store.VeiculosLinha(codigo)
 }
+
+func (l LinhaBO) Tabela(codigo, numeroPonto string) ([]*model.Parada, error) {
+	return l.store.TabelaLinha(codigo, numeroPonto)
+}
